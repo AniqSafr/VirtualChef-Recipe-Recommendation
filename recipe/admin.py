@@ -1,6 +1,8 @@
 from django.contrib import admin
-from .models import EditNutrition
+from .models import EditNutrition, ListItem, LikedRecipe
 
-@admin.register(EditNutrition)
-class EditNutritionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'calories', 'fat', 'protein')  # Display key fields in the admin panel
+admin.site.register(EditNutrition)
+admin.site.register(ListItem)
+admin.site.register(LikedRecipe)
+
+
