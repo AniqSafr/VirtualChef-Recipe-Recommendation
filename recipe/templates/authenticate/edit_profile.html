@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+		integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+	<title>Virtual Chef</title>
+</head>
+
+<body>
+	<style>
+		.btn-edit-profile,
+		.btn-confirm {
+			background-color: #865d32;
+			color: #ffffff;
+			border: none;
+			padding: 15px;
+			border-radius: 15px;
+			font-size: 16px;
+			cursor: pointer;
+			transition: background-color 0.3s ease, color 0.3s ease;
+			font-weight: bold;
+		}
+
+		.btn-edit-profile:hover {
+			background-color: #ddd;
+			color: #9f6e28;
+		}
+
+		.btn-confirm:hover {
+			background-color: #ddd;
+			color: #9f6e28;
+		}
+
+
+		.btn-logout,
+		.btn-cancel {
+			background-color: #df2a2a;
+			color: #ffffff;
+			border: none;
+			padding: 15px;
+			border-radius: 15px;
+			font-size: 16px;
+			cursor: pointer;
+			transition: background-color 0.3s ease, color 0.3s ease;
+			font-weight: bold;
+		}
+
+		.btn-logout:hover {
+			background-color: #ddd;
+			color: #df2a2a;
+		}
+
+		.btn-cancel:hover {
+			background-color: #ddd;
+			color: #df2a2a;
+		}
+	</style>
+	<h2 class="pl-5 pt-3">
+		<a href="{% url 'main' %}" style="text-decoration: none; color: inherit;">
+			<i class="fa fa-arrow-left pr-2" aria-hidden="true" style="color:rgb(90, 90, 90);"></i>
+		</a>
+		Profile
+	</h2>
+
+	<div class="container rounded bg-white mt-5 mb-5">
+		<div class="row">
+			<div class="col-md-3 border-right">
+				<div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5"
+						width="150px" src="..\static\media\images.jpeg"><span
+						class="font-weight-bold">{{user.username}}</span><span
+						class="text-black-50">{{user.email}}</span><span> </span></div>
+			</div>
+			<div class="col-md-5 border-right">
+				<div class="p-3 py-5">
+					<div class="d-flex justify-content-between align-items-center mb-3">
+						<h4 class="text-right">Profile Settings</h4>
+					</div>
+					<div class="row mt-3">
+						<form method="POST" action="{% url 'edit_profile' %}">
+							{% csrf_token %}
+						
+							{% if form.errors %}
+							<div class="alert alert-danger alert-dismissable" role="alert">
+								<button class="close" data-dismiss="alert">
+									<small><sup>x</sup></small>
+								</button>
+								{% for field in form %}
+									{% if field.errors %}
+										<div>{{ field.errors }}</div>
+									{% endif %}
+								{% endfor %}
+							</div>
+							{% endif %}
+						
+							<!-- Profile form fields -->
+							{{ form.as_p }}
+						
+							<!-- Submit button for profile form -->
+							<input type="submit" value="Submit" name="profile_submit" class="btn btn-edit-profile">
+						
+							<!-- Additional buttons -->
+							<a class="btn btn-logout" href="{% url 'logout' %}">Logout</a>
+							<p><a href="{% url 'change_password' %}">Click here</a> to change your password</p>
+						</form>
+						
+
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="p-3 py-5">
+					<div class="d-flex justify-content-between align-items-center mb-3">
+						<h4 class="text-right">
+							Nutrition Preferences
+							<button type="button" class="btn btn-link p-0" data-toggle="modal"
+								data-target="#nutriModal">
+								<i class="fa fa-pencil-square-o pl-2" aria-hidden="true"
+									style="color:rgb(90, 90, 90); font-size:30px;"></i>
+							</button>
+						</h4>
+					</div>
+					<div class="col-md-12">
+						<table class="table table-secondary table-hover">
+							<tbody>
+								<tr>
+									<td>Calories</td>
+									<td>{{ nutrition_data.calories }} cal</td>
+								</tr>
+								<tr>
+									<td>Fat</td>
+									<td>{{ nutrition_data.fat }} g</td>
+								</tr>
+								<tr>
+									<td>Saturated Fat</td>
+									<td>{{ nutrition_data.saturated_fat }} g</td>
+								</tr>
+								<tr>
+									<td>Cholesterol</td>
+									<td>{{ nutrition_data.cholesterol }} mg</td>
+								</tr>
+								<tr>
+									<td>Sodium</td>
+									<td>{{ nutrition_data.sodium }} mg</td>
+								</tr>
+								<tr>
+									<td>Carbohydrate</td>
+									<td>{{ nutrition_data.carbohydrate }} g</td>
+								</tr>
+								<tr>
+									<td>Fiber</td>
+									<td>{{ nutrition_data.fiber }} g</td>
+								</tr>
+								<tr>
+									<td>Sugar</td>
+									<td>{{ nutrition_data.sugar }} g</td>
+								</tr>
+								<tr>
+									<td>Protein</td>
+									<td>{{ nutrition_data.protein }} g</td>
+								</tr>
+							</tbody>
+						</table>
+					</div> <br>
+				</div>
+			</div>
+			<!-- Nutrition Edit Modal -->
+			<div class="modal" id="nutriModal">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<!-- Modal Header -->
+						<div class="modal-header">
+							<h4 class="modal-title">Edit Nutrition Preferences</h4>
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+						</div>
+
+						<div class="modal-body">
+							<div class="modal-warning">
+								<p class="text-danger mt-1" style="font-size: 0.9rem;">
+									Note: Nutrition values cannot be 0.
+								</p>
+							</div>
+							<form id="nutritionForm" method="post">
+								{% csrf_token %}
+								
+								<!-- Display any form errors -->
+								{% if nutrition_form.errors %}
+								<div class="alert alert-danger alert-dismissable" role="alert">
+									<button class="close" data-dismiss="alert">
+										<small><sup>x</sup></small>
+									</button>
+									{% for field in nutrition_form %}
+										{% if field.errors %}
+											<div>{{ field.errors }}</div>
+										{% endif %}
+									{% endfor %}
+								</div>
+								{% endif %}
+								
+								<!-- Display the nutrition form fields -->
+								{{ nutrition_form.as_p }}
+						
+								<!-- Submit button for nutrition form -->
+								<input type="submit" value="Save Nutrition" name="nutrition_submit" class="btn btn-confirm">
+								<button type="button" class="btn btn-cancel" data-dismiss="modal">Cancel</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	</div>
+</body>
+
+</html>

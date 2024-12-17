@@ -1,0 +1,260 @@
+{% extends 'authenticate/base.html' %}
+
+
+{% block content %}
+<style>
+    .row1 {
+        position: relative;
+        text-align: center;
+        width: auto;
+        overflow: hidden;
+    }
+
+    .row1 img {
+        height: auto;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .overlay-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: transparent;
+        color: #fff;
+        padding: 10px 20px;
+        text-align: center;
+    }
+
+    .overlay-text h1 {
+        font-size: 125px;
+        font-weight: bold;
+        font-style: italic;
+    }
+
+    .txt {
+        font-size: 30px;
+        font-weight: bold;
+        color: #bbbbbb;
+    }
+
+    /* Full-width input fields */
+    input[type=text] {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        background: #f1f1f1;
+        border-radius: 20px;
+        /* Adds rounded corners */
+    }
+
+    input[type=text]:focus {
+        background-color: #ddd;
+        outline: none;
+    }
+
+    input[type=text]::placeholder {
+        color: #000000;
+        font-weight: bold;
+    }
+
+    .nav-link {
+        color: rgb(255, 255, 255);
+
+    }
+
+    .nav-link:hover {
+        color: hsla(36, 87%, 35%, 0.63);
+    }
+
+    .border {
+        border-radius: 20px;
+        background-color: #865d32;
+
+    }
+
+    .border:hover {
+        background-color: #ddd;
+    }
+
+    .btn-menu {
+        background-color: #865d32;
+        color: #ffffff;
+    }
+
+    .btn-menu:hover {
+        background-color: #ddd;
+        color: #9f6e28;
+    }
+
+    .card-img-top:hover {
+        cursor: pointer;
+    }
+
+    .btn-recommend {
+        background-color: #865d32;
+        color: #ffffff;
+        border: none;
+        padding: 15px;
+        border-radius: 15px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        font-weight: bold;
+    }
+
+    /* Hover effect */
+    .btn-recommend:hover {
+        background-color: #ddd;
+        color: #9f6e28;
+    }
+
+    .recommend-form {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* Centers the form content horizontally */
+        gap: 10px;
+        /* Adds some space between the input and button */
+    }
+</style>
+
+<div class="row row1">
+    <img src="..\static\media\cooking-frame4.jpg" alt="background" class="img-fluid">
+    <div class="overlay-text">
+        <h1 class="h1">Virtual Chef</h1>
+        <p class="txt">Explore our vast collection of over 80,000 recipes</p>
+    </div>
+</div>
+<div class="col-sm-9 mt-5" id="section1">
+    <div class="row">
+        {% for recipe in recommendations %}
+        <!-- First Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card" style="width:100%">
+                <img class="card-img-top" src="{{ recipe.Images }}" alt="Card image"
+                    style="width:100%; height:600px; object-fit: cover;" href="#myModal" data-toggle="modal"
+                    data-toggle="tooltip" title="Tap for Details!" onclick="populateModal('{{ recipe.Name }}', '{{ recipe.Description|escapejs }}',
+                        '{{ recipe.Images }}', '{{ recipe.RecipeIngredients|escapejs }}', '{{ recipe.RecipeInstructions|escapejs }}',
+                        '{{ recipe.Calories }}', '{{ recipe.FatContent }}', '{{ recipe.SaturatedFatContent }}', '{{ recipe.CholesterolContent }}',
+                        '{{ recipe.SodiumContent }}', '{{ recipe.CarbohydrateContent }}', '{{ recipe.FiberContent }}', '{{ recipe.SugarContent }}',
+                        '{{ recipe.ProteinContent }}')">
+                <div class="card-body">
+                    <h4 class="card-title">{{ recipe.Name }}</h4>
+                    <p class="card-text">Total Time: {{ recipe.TotalTime}}</p>
+                    <!-- If you have a description column -->
+                    <a href="#" class="btn btn-menu">Like</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- The Modal -->
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="modalTitle">Modal Heading</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <img class="card-img-top" id="modalImage" alt="Card image"
+                            style="width:100%; height:600px; object-fit: cover;">
+                        <br>
+                        <h3 class="desc-title">Description</h3>
+                        <p id="modalDescription">description</p>
+                        <br>
+                        <h3 class="nutrition-title">Nutritional Information</h3>
+                        <table class="table table-bordered table-light table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Calories</th>
+                                    <th>Fat</th>
+                                    <th>Saturated Fat</th>
+                                    <th>Cholesterol</th>
+                                    <th>Sodium</th>
+                                    <th>Carbohydrate</th>
+                                    <th>Fiber</th>
+                                    <th>Sugar</th>
+                                    <th>Protein</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="modalCalories"></td>
+                                    <td id="modalFatContent"></td>
+                                    <td id="modalSaturatedFatContent"></td>
+                                    <td id="modalCholesterolContent"></td>
+                                    <td id="modalSodiumContent"></td>
+                                    <td id="modalCarbohydrateContent"></td>
+                                    <td id="modalFiberContent"></td>
+                                    <td id="modalSugarContent"></td>
+                                    <td id="modalProteinContent"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h3 class="ingredients-title">Ingredients</h3>
+                        <p id="modalIngredients">Ingredients</p>
+                        <br>
+                        <h3 class="instructions-title">Instructions</h3>
+                        <p id="modalInstructions">Instructions</p>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-menu" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            // Add event listener for the input field
+            document.getElementById('searchInput').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {  // Detect "Enter" key press
+                    // Scroll to Section 1 when "Enter" is pressed
+                    document.getElementById('section1').scrollIntoView({
+                        behavior: 'smooth'  // Smooth scrolling effect
+                    });
+                }
+            });
+
+            function populateModal(title, description, imageUrl, ingredients, instructions, calories, fatContent, saturatedFatContent, cholesterolContent, sodiumContent, carbohydrateContent, fiberContent, sugarContent, proteinContent) {
+                // Set the modal title
+                document.getElementById('modalTitle').innerText = title;
+
+                // Set the modal image
+                document.getElementById('modalImage').src = imageUrl;
+
+                // Set the modal description
+                document.getElementById('modalDescription').innerText = description;
+
+                // Set the modal ingredients
+                document.getElementById('modalIngredients').innerText = ingredients;
+
+                // Set the modal instructions
+                document.getElementById('modalInstructions').innerText = instructions;
+
+                // Set nutritional values
+                document.getElementById('modalCalories').innerText = calories + ' cal';
+                document.getElementById('modalFatContent').innerText = fatContent + ' g';
+                document.getElementById('modalSaturatedFatContent').innerText = saturatedFatContent + ' g';
+                document.getElementById('modalCholesterolContent').innerText = cholesterolContent + ' mg';
+                document.getElementById('modalSodiumContent').innerText = sodiumContent + ' mg';
+                document.getElementById('modalCarbohydrateContent').innerText = carbohydrateContent + ' g';
+                document.getElementById('modalFiberContent').innerText = fiberContent + ' g';
+                document.getElementById('modalSugarContent').innerText = sugarContent + ' g';
+                document.getElementById('modalProteinContent').innerText = proteinContent + ' g';
+            }
+
+        </script>
+
+
+        {% endblock %}

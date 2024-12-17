@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+    integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.min.css" rel="stylesheet" />
+
+  <title>Virtual Chef</title>
+</head>
+
+<body>
+  <h2 class="pl-5 pt-3">
+    <a href="{% url 'main' %}" style="text-decoration: none; color: inherit;">
+      <i class="fa fa-arrow-left pr-2" aria-hidden="true" style="color:rgb(90, 90, 90);"></i>
+    </a>
+    Item List
+  </h2>
+
+  <section class="vh-50">
+    <div class="container py-5 h-50">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col col-xl-10">
+
+          <div class="card" style="border-radius: 15px;">
+            <div class="card-body p-5">
+
+              <form method="POST" class="d-flex justify-content-center align-items-center mb-4">
+                {% csrf_token %}
+                <div data-mdb-input-init class="form-outline flex-fill">
+                  <input type="text" id="form3" name="item_name" class="form-control form-control-lg" required />
+                  <label class="form-label" for="form3">What do you need to buy?</label>
+                </div>
+                <button type="submit" data-mdb-button-init data-mdb-ripple-init
+                  class="btn btn-add btn-lg ms-2">Add</button>
+                <style>
+                  .btn-add {
+                    background-color: #865d32;
+                    color: #ffffff;
+                    border: none;
+                    padding: 15px;
+                    border-radius: 15px;
+                    font-size: 16px;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease, color 0.3s ease;
+                    font-weight: bold;
+                  }
+
+                  .btn-add:hover {
+                    background-color: #ddd;
+                    color: #9f6e28;
+                  }
+
+                  .text-decoration-line-through {
+                    text-decoration: line-through;
+                    color: gray;
+                  }
+                </style>
+              </form>
+
+              <ul class="list-group mb-0">
+                {% for item in user_items %}
+                <li
+                  class="list-group-item d-flex justify-content-between align-items-center border-start-0 border-top-0 border-end-0 border-bottom rounded-0 mb-2">
+                  <div class="d-flex align-items-center">
+                    <input class="form-check-input me-2" type="checkbox" aria-label="..."
+                      onclick="toggleCheckedUI(this)" />
+                    <span class="item-text {% if item.checked %}text-decoration-line-through{% endif %}">
+                      {{ item.item_name }}</span>
+                  </div>
+                  <a href="{% url 'remove_item' item.id %}" data-mdb-tooltip-init title="Remove item">
+                    <i class="fas fa-times text-danger"></i>
+                  </a>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+    // Function to toggle the UI and save the checkbox state to localStorage
+    function toggleCheckedUI(checkbox) {
+      const itemId = checkbox.getAttribute('data-id');
+      const itemText = checkbox.nextElementSibling;
+  
+      if (checkbox.checked) {
+        itemText.classList.add('text-decoration-line-through');
+        saveToLocalStorage(itemId, true);
+      } else {
+        itemText.classList.remove('text-decoration-line-through');
+        saveToLocalStorage(itemId, false);
+      }
+    }
+  
+    // Save the checkbox state in localStorage
+    function saveToLocalStorage(itemId, isChecked) {
+      let checkedItems = JSON.parse(localStorage.getItem('checkedItems')) || {};
+      checkedItems[itemId] = isChecked; // Save the state for the specific item
+      localStorage.setItem('checkedItems', JSON.stringify(checkedItems));
+    }
+  
+    // Load the checkbox states from localStorage
+    function loadFromLocalStorage() {
+      let checkedItems = JSON.parse(localStorage.getItem('checkedItems')) || {};
+      const checkboxes = document.querySelectorAll('.form-check-input');
+  
+      checkboxes.forEach(checkbox => {
+        const itemId = checkbox.getAttribute('data-id');
+        const itemText = checkbox.nextElementSibling;
+  
+        // Check if the item's state is stored in localStorage
+        if (checkedItems[itemId]) {
+          checkbox.checked = true;
+          itemText.classList.add('text-decoration-line-through');
+        } else {
+          checkbox.checked = false;
+          itemText.classList.remove('text-decoration-line-through');
+        }
+      });
+    }
+  
+    // Load the state when the page is loaded
+    window.onload = loadFromLocalStorage;
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+		integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+	<title>Register</title>
+</head>
+
+<body>
+	<h2 class="pl-5 pt-3">
+		<a href="{% url 'main' %}" style="text-decoration: none; color: inherit;">
+			<i class="fa fa-arrow-left pr-2" aria-hidden="true" style="color:rgb(90, 90, 90);"></i>
+		</a>
+		Register
+	</h2>
+
+	<div class="col-md-6 offset-md-3">
+
+		<form method="POST" action="{% url 'register' %}">
+			{% csrf_token %}
+
+			{% if form.errors %}
+			<div class="alert alert-danger alart-dismissable" role="alert">
+				<button class="close" data-dismiss="alert">
+					<small><sup>x</sup></small>
+				</button>
+
+
+				{% for field in form%}
+				{% if field.errors%}
+				{{field.errors}}
+				{% endif%}
+
+				{% endfor %}
+
+
+			</div>
+
+
+
+			{% endif %}
+
+
+			{{ form.as_p }}
+
+
+			<input type="submit" value="Register" class=" btn btn-register">
+			<style>
+				.btn-register{
+					background-color: #865d32;
+					color: #ffffff;
+					border: none;
+					padding: 15px;
+					border-radius: 15px;
+					font-size: 16px;
+					cursor: pointer;
+					transition: background-color 0.3s ease, color 0.3s ease;
+					font-weight: bold;
+				}
+
+				.btn-register:hover {
+					background-color: #ddd;
+					color: #9f6e28;
+				}
+			</style>
+		</form>
+	</div>
+
+</body>
+
+</html>
