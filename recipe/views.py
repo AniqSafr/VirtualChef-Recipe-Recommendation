@@ -3,7 +3,8 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.contrib import messages 
 from .forms import SignUpForm, EditProfileForm, EditNutritionForm
-from .models import EditNutrition, ListItem
+from .models import EditNutrition, ListItem, LikedRecipe
+from django.http import JsonResponse
 import pandas 
 import joblib
 import random
@@ -108,8 +109,6 @@ def edit_profile(request):
 
     return render(request, 'authenticate/edit_profile.html', context)
 
-
-
 def change_password(request):
 	if request.method =='POST':
 		form = PasswordChangeForm(data=request.POST, user= request.user)
@@ -123,10 +122,6 @@ def change_password(request):
 
 	context = {'form': form}
 	return render(request, 'authenticate/change_password.html', context)
-
-
-def menu(request): 
-	return render(request, 'main/menu.html', {})
 
 def item(request):
     # Handle form submission
@@ -208,7 +203,6 @@ def recommend_by_calories(neigh,dataframe, max_daily_calories, max_nutritional_v
 
 
 # Main view for recipe recommendations
-
 def recommend_recipe(request):
     # Default max nutritional values for anonymous users
     max_values = [500, 15, 5, 50, 600, 50, 5, 20, 25]
@@ -230,26 +224,106 @@ def recommend_recipe(request):
         ]
     print(max_values)
 
+
+def recommend_recipe(request):
+    # Default max nutritional values
+    max_values = [500, 15, 5, 50, 600, 50, 5, 20, 25]
+
+    # Retrieve user's custom nutrition preferences, if available
+    if request.user.is_authenticated:
+        user = request.user
+        nutrition_data = get_object_or_404(EditNutrition, user=user)
+        max_values = [
+            getattr(nutrition_data, "calories", 500),
+            getattr(nutrition_data, "fat", 15),
+            getattr(nutrition_data, "saturated_fat", 5),
+            getattr(nutrition_data, "cholesterol", 50),
+            getattr(nutrition_data, "sodium", 600),
+            getattr(nutrition_data, "carbohydrate", 50),
+            getattr(nutrition_data, "fiber", 5),
+            getattr(nutrition_data, "sugar", 20),
+            getattr(nutrition_data, "protein", 25),
+        ]
+
     if request.method == 'POST':
-        # Get the ingredient from the user input (POST data)
+        if 'like' in request.POST:
+            # Handle recipe "like" functionality
+            recipe_id = int(request.POST.get('recipe_id'))
+            recommendations_list = request.session.get('recommendations_list', [])
+
+            # Find the recipe in the recommendations list
+            recipe = next((r for r in recommendations_list if r['RecipeId'] == recipe_id), None)
+
+            if not recipe:
+                return JsonResponse({'message': 'Recipe not found!'}, status=404)
+
+            # Check if the recipe is already liked
+            if LikedRecipe.objects.filter(user=request.user, recipe_id=recipe_id).exists():
+                return JsonResponse({'message': 'Recipe already liked!'}, status=400)
+
+            # Save the liked recipe to the database
+            liked_recipe = LikedRecipe.objects.create(
+                user=request.user,
+                recipe_id=recipe['RecipeId'],
+                name=recipe['Name'],
+                author_id=recipe.get('AuthorId', 0),
+                author_name=recipe.get('AuthorName', ''),
+                total_time=recipe.get('TotalTime', ''),
+                description=recipe.get('Description', ''),
+                images=recipe.get('Images', ''),
+                calories=recipe.get('Calories', 0.0),
+                fat_content=recipe.get('FatContent', 0.0),
+                saturated_fat_content=recipe.get('SaturatedFatContent', 0.0),
+                cholesterol_content=recipe.get('CholesterolContent', 0.0),
+                sodium_content=recipe.get('SodiumContent', 0.0),
+                carbohydrate_content=recipe.get('CarbohydrateContent', 0.0),
+                fiber_content=recipe.get('FiberContent', 0.0),
+                sugar_content=recipe.get('SugarContent', 0.0),
+                protein_content=recipe.get('ProteinContent', 0.0),
+                recipe_instructions=recipe.get('RecipeInstructions', ''),
+                recipe_ingredients=recipe.get('RecipeIngredientParts', ''),
+            )
+            liked_recipe.save()
+
+            return JsonResponse({'message': 'Recipe liked successfully!'}, status=200)
+
+        # Handle search by ingredient if present in POST data
         ingredient = request.POST.get('ingredient')
-
-        # Get recommendations based on user input
         recommendations = recommend_by_calories(neigh, df, 500, max_values, ingredient)
-
     else:
-        # If it's a GET request, automatically suggest recipes with a default ingredient
+        # Handle GET request and return recommendations
         recommendations = recommend_by_calories(neigh, df, 500, max_values)
 
-    # If no recommendations are found, display a "No recipes found" message
+    # If no recommendations are found
     if recommendations.empty:
         return render(request, 'main/main.html', {'message': 'No recipes found', 'recommendations': []})
 
-    # Convert the DataFrame to a list of dictionaries to pass to the template
+    # Convert recommendations to list of dictionaries
     recommendations_list = recommendations.to_dict(orient='records')
 
-    # Pass the recommendations list to the template
+    # Store recommendations in session for further use (e.g., like functionality)
+    request.session['recommendations_list'] = recommendations_list
+
     return render(request, 'main/main.html', {'recommendations': recommendations_list})
+
+
+
+def liked_recipes(request):
+    if request.method == 'POST' and 'remove_like' in request.POST:
+        recipe_id = int(request.POST.get('recipe_id'))
+        try:
+            liked_recipe = LikedRecipe.objects.get(user=request.user, recipe_id=recipe_id)
+            liked_recipe.delete()
+            return JsonResponse({'message': 'Recipe removed from likes!'}, status=200)
+        except LikedRecipe.DoesNotExist:
+            return JsonResponse({'message': 'Recipe not found!'}, status=404)
+
+    # For GET requests, display the liked recipes
+    liked_recipes = LikedRecipe.objects.filter(user=request.user)
+    return render(request, 'main/menu.html', {'liked_recipes': liked_recipes})
+
+
+
 
 
 

@@ -170,7 +170,10 @@
                         <h4 class="card-title">{{ recipe.Name }}</h4>
                         <p class="card-text">Total Time: {{ recipe.TotalTime}}</p>
                         <!-- If you have a description column -->
-                        <a href="#" class="btn btn-menu">Like</a>
+                        <!-- Recipe Like Button -->
+                        <button class="btn btn-menu" onclick="likeRecipe('{{ recipe.RecipeId }}')">
+                            Like
+                        </button>
                     </div>
                 </div>
             </div>
@@ -212,7 +215,7 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td id="modalCalories" ></td>
+                                        <td id="modalCalories"></td>
                                         <td id="modalFatContent"></td>
                                         <td id="modalSaturatedFatContent"></td>
                                         <td id="modalCholesterolContent"></td>
@@ -279,6 +282,45 @@
                     document.getElementById('modalSugarContent').innerText = sugarContent + ' g';
                     document.getElementById('modalProteinContent').innerText = proteinContent + ' g';
                 }
+
+                function likeRecipe(recipeId) {
+                    // Fetch the CSRF token from the Django template context
+                    const csrfToken = "{{ csrf_token }}";
+
+                    // Perform the fetch request to the "main" URL
+                    fetch("{% url 'main' %}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                            "X-CSRFToken": csrfToken,  // Include CSRF token for Django
+                        },
+                        body: new URLSearchParams({
+                            recipe_id: recipeId,  // Recipe ID to like
+                            like: true,  // Indicate this is a "like" action
+                        }),
+                    })
+                        .then((response) => {
+                            if (!response.ok) {
+                                return response.json().then((data) => {
+                                    throw new Error(data.message || "Something went wrong!");
+                                });
+                            }
+                            return response.json(); // Parse JSON response
+                        })
+                        .then((data) => {
+                            if (data.message) {
+                                // Display success message
+                                alert(data.message);
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("Error:", error);
+                            // Display error message to the user
+                            alert("Failed to like the recipe. " + error.message);
+                        });
+                }
+
+
 
             </script>
 
