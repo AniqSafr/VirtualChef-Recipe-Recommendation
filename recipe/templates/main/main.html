@@ -155,6 +155,8 @@
     </div>
     <div class="col-sm-9 mt-5" id="section1">
         <div class="row">
+            {# Will know if user is logged in or not #}
+            {% if user.is_authenticated %}
             {% for recipe in recommendations %}
             <!-- First Card -->
             <div class="col-md-4 mb-4">
@@ -178,6 +180,26 @@
                 </div>
             </div>
             {% endfor %}
+            {% else %}
+            {% for recipe in recommendations %}
+            <!-- First Card -->
+            <div class="col-md-4 mb-4">
+                <div class="card" style="width:100%">
+                    <img class="card-img-top" src="{{ recipe.Images }}" alt="Card image"
+                        style="width:100%; height:600px; object-fit: cover;" href="#myModal" data-toggle="modal"
+                        data-toggle="tooltip" title="Tap for Details!" onclick="populateModal('{{ recipe.Name }}', '{{ recipe.Description|escapejs }}',
+                        '{{ recipe.Images }}', '{{ recipe.RecipeIngredients|escapejs }}', '{{ recipe.RecipeInstructions|escapejs }}',
+                        '{{ recipe.Calories }}', '{{ recipe.FatContent }}', '{{ recipe.SaturatedFatContent }}', '{{ recipe.CholesterolContent }}',
+                        '{{ recipe.SodiumContent }}', '{{ recipe.CarbohydrateContent }}', '{{ recipe.FiberContent }}', '{{ recipe.SugarContent }}',
+                        '{{ recipe.ProteinContent }}')">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ recipe.Name }}</h4>
+                        <p class="card-text">Total Time: {{ recipe.TotalTime}}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif%}
 
             <!-- The Modal -->
             <div class="modal fade" id="myModal">
