@@ -146,9 +146,12 @@ neigh = joblib.load(open('recipe/static/artifacts/neigh.pkl', 'rb'))
 df = joblib.load(open('recipe/static/artifacts/recipes.pkl', 'rb'))
 
 def scaling(dataframe):
-    scaler=StandardScaler()
-    prep_data=scaler.fit_transform(dataframe.iloc[:,12:21].to_numpy())
-    return prep_data,scaler
+    if dataframe.empty:
+        raise ValueError("No data available for scaling.")
+    scaler = StandardScaler()
+    prep_data = scaler.fit_transform(dataframe.iloc[:, 12:21].to_numpy())
+    return prep_data, scaler
+
 
 def build_pipeline(neigh,scaler,params):
     transformer = FunctionTransformer(neigh.kneighbors,kw_args=params)
@@ -179,9 +182,13 @@ def recommand(dataframe,_input,max_nutritional_values,ingredient_filter=None,par
     pipeline=build_pipeline(neigh,scaler,params)
     return apply_pipeline(pipeline,_input,extracted_data)
 
-def recommend_by_calories(neigh,dataframe, max_daily_calories, max_nutritional_values, ingredient_filter=None, params={'return_distance':False}):
+def recommend_by_calories(neigh, dataframe, max_daily_calories, max_nutritional_values, ingredient_filter=None, params={'return_distance': False}):
     # Extract data based on maximum nutritional values and ingredient filter
     extracted_data = extract_data(dataframe, ingredient_filter, max_nutritional_values)
+
+    # Handle the case when no data is extracted
+    if extracted_data.empty:
+        return pandas.DataFrame()  # Return an empty DataFrame
 
     # Scale the data
     prep_data, scaler = scaling(extracted_data)
@@ -202,29 +209,8 @@ def recommend_by_calories(neigh,dataframe, max_daily_calories, max_nutritional_v
     return recommended_recipe
 
 
+
 # Main view for recipe recommendations
-def recommend_recipe(request):
-    # Default max nutritional values for anonymous users
-    max_values = [500, 15, 5, 50, 600, 50, 5, 20, 25]
-
-    # Check if the user is authenticated
-    if request.user.is_authenticated:
-        user = request.user
-        nutrition_data = get_object_or_404(EditNutrition, user=user)
-        max_values = [
-            getattr(nutrition_data, "calories", 0),
-            getattr(nutrition_data, "fat", 0),
-            getattr(nutrition_data, "saturated_fat", 0),
-            getattr(nutrition_data, "cholesterol", 0),
-            getattr(nutrition_data, "sodium", 0),
-            getattr(nutrition_data, "carbohydrate", 0),
-            getattr(nutrition_data, "fiber", 0),
-            getattr(nutrition_data, "sugar", 0),
-            getattr(nutrition_data, "protein", 0),
-        ]
-    print(max_values)
-
-
 def recommend_recipe(request):
     # Default max nutritional values
     max_values = [500, 15, 5, 50, 600, 50, 5, 20, 25]
@@ -294,9 +280,9 @@ def recommend_recipe(request):
         # Handle GET request and return recommendations
         recommendations = recommend_by_calories(neigh, df, 500, max_values)
 
-    # If no recommendations are found
+    # Check if no recommendations are found
     if recommendations.empty:
-        return render(request, 'main/main.html', {'message': 'No recipes found', 'recommendations': []})
+        return render(request, 'main/main.html', {'message': 'No recipes found. Please try a different ingredient or adjust your preferences.', 'recommendations': []})
 
     # Convert recommendations to list of dictionaries
     recommendations_list = recommendations.to_dict(orient='records')
@@ -305,6 +291,7 @@ def recommend_recipe(request):
     request.session['recommendations_list'] = recommendations_list
 
     return render(request, 'main/main.html', {'recommendations': recommendations_list})
+
 
 
 
