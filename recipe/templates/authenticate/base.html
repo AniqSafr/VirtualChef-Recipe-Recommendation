@@ -83,34 +83,7 @@
     </div>
   </nav>
 
-
-  <!-- Message untuk user if they already sign in -->
-  <!-- Modal for Messages -->
-  <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="messageModalLabel">Notification</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          {% if messages %}
-          {% for message in messages %}
-          <div class="alert alert-info" role="alert">
-            {{ message }}
-          </div>
-          {% endfor %}
-          {% endif %}
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  {% include 'main/message.html' %}
 
 
 
@@ -129,16 +102,6 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
     integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
     crossorigin="anonymous"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      // Check if there are any messages
-      var hasMessages = document.querySelector('.alert');
-      if (hasMessages) {
-        // Show the modal if messages exist
-        $('#messageModal').modal('show');
-      }
-    });
-  </script>
 
 </body>
 

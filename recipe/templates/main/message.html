@@ -1,0 +1,53 @@
+<!-- Modal for Messages -->
+<div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">Notification</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-info" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-close" data-dismiss="modal">Close</button>
+                <style>.btn-close{
+					background-color: #865d32;
+					color: #ffffff;
+					border: none;
+					padding: 15px;
+					border-radius: 15px;
+					font-size: 16px;
+					cursor: pointer;
+					transition: background-color 0.3s ease, color 0.3s ease;
+					font-weight: bold;
+				}
+
+				.btn-close:hover {
+					background-color: #ddd;
+					color: #9f6e28;
+				}</style>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Check if there are any messages
+        var hasMessages = document.querySelector('.alert');
+        if (hasMessages) {
+            // Show the modal if messages exist
+            $('#messageModal').modal('show');
+        }
+    });
+</script>

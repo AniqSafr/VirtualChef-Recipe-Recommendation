@@ -68,6 +68,8 @@ def register_user(request):
             login(request, user)
             messages.success(request, 'You are now registered and logged in.')
             return redirect('home')
+        else:
+             messages.success(request,('Error to register'))
     else:
         form = SignUpForm()
 
@@ -89,6 +91,8 @@ def edit_profile(request):
         if 'profile_submit' in request.POST and profile_form.is_valid():
             profile_form.save()
             messages.success(request, 'Your profile has been updated.')
+        else:
+            messages.success(request, 'Error to update.')
 
         if 'nutrition_submit' in request.POST and nutrition_form.is_valid():
             nutrition_form.save()
@@ -110,18 +114,20 @@ def edit_profile(request):
     return render(request, 'authenticate/edit_profile.html', context)
 
 def change_password(request):
-	if request.method =='POST':
-		form = PasswordChangeForm(data=request.POST, user= request.user)
-		if form.is_valid():
-			form.save()
-			update_session_auth_hash(request, form.user)
-			messages.success(request, ('You have edited your password'))
-			return redirect('home')
-	else: 		#passes in user information 
-		form = PasswordChangeForm(user= request.user) 
+    if request.method == 'POST':
+        form = PasswordChangeForm(data=request.POST, user=request.user)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            messages.success(request, 'You have edited your password')
+            return redirect('home')
+        else:
+            messages.error(request, 'You failed to edit your password')
+    else:
+        # Passes in user information
+        form = PasswordChangeForm(user=request.user)
 
-	context = {'form': form}
-	return render(request, 'authenticate/change_password.html', context)
+    return render(request, 'authenticate/change_password.html', {'form': form})
 
 def item(request):
     # Handle form submission
@@ -207,7 +213,6 @@ def recommend_by_calories(neigh, dataframe, max_daily_calories, max_nutritional_
     recommended_recipe = apply_pipeline(pipeline, test_input, extracted_data)
 
     return recommended_recipe
-
 
 
 # Main view for recipe recommendations
