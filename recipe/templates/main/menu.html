@@ -98,10 +98,11 @@
                     <p class="card-text">Total Time: {{ recipe.total_time}}</p>
                     <!-- If you have a description column -->
                     <!-- Recipe Like Button -->
-                    <form method="POST" action="">
+                    <form method="POST" action="" onsubmit="return false;">
                         {% csrf_token %}
-                        <input type="hidden" name="recipe_id" value="{{ recipe.recipe_id }}">
-                        <button type="submit" name="remove_like" class="btn btn-menu">UnLike</button>
+                        <button type="button" class="btn btn-menu" onclick="removeLike('{{ recipe.recipe_id }}')">
+                            Remove Like
+                        </button>
                     </form>
                 </div>
             </div>
@@ -175,49 +176,54 @@
 </div>
 
 <script>
-     // Add event listener for the input field
-     document.getElementById('searchInput').addEventListener('keypress', function (e) {
-                    if (e.key === 'Enter') {  // Detect "Enter" key press
-                        // Scroll to Section 1 when "Enter" is pressed
-                        document.getElementById('section1').scrollIntoView({
-                            behavior: 'smooth'  // Smooth scrolling effect
-                        });
-                    }
-                });
+    // Add event listener for the input field
+    document.getElementById('searchInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {  // Detect "Enter" key press
+            // Scroll to Section 1 when "Enter" is pressed
+            document.getElementById('section1').scrollIntoView({
+                behavior: 'smooth'  // Smooth scrolling effect
+            });
+        }
+    });
 
-                function populateModal(title, description, imageUrl, ingredients, instructions, calories, fatContent, saturatedFatContent, cholesterolContent, sodiumContent, carbohydrateContent, fiberContent, sugarContent, proteinContent) {
-                    // Set the modal title
-                    document.getElementById('modalTitle').innerText = title;
+    function populateModal(title, description, imageUrl, ingredients, instructions, calories, fatContent, saturatedFatContent, cholesterolContent, sodiumContent, carbohydrateContent, fiberContent, sugarContent, proteinContent) {
+        // Set the modal title
+        document.getElementById('modalTitle').innerText = title;
 
-                    // Set the modal image
-                    document.getElementById('modalImage').src = imageUrl;
+        // Set the modal image
+        document.getElementById('modalImage').src = imageUrl;
 
-                    // Set the modal description
-                    document.getElementById('modalDescription').innerText = description;
+        // Set the modal description
+        document.getElementById('modalDescription').innerText = description;
 
-                    // Set the modal ingredients
-                    document.getElementById('modalIngredients').innerText = ingredients;
+        // Set the modal ingredients
+        document.getElementById('modalIngredients').innerText = ingredients;
 
-                    // Set the modal instructions
-                    document.getElementById('modalInstructions').innerText = instructions;
+        // Set the modal instructions
+        document.getElementById('modalInstructions').innerText = instructions;
 
-                    // Set nutritional values
-                    document.getElementById('modalCalories').innerText = calories + ' cal';
-                    document.getElementById('modalFatContent').innerText = fatContent + ' g';
-                    document.getElementById('modalSaturatedFatContent').innerText = saturatedFatContent + ' g';
-                    document.getElementById('modalCholesterolContent').innerText = cholesterolContent + ' mg';
-                    document.getElementById('modalSodiumContent').innerText = sodiumContent + ' mg';
-                    document.getElementById('modalCarbohydrateContent').innerText = carbohydrateContent + ' g';
-                    document.getElementById('modalFiberContent').innerText = fiberContent + ' g';
-                    document.getElementById('modalSugarContent').innerText = sugarContent + ' g';
-                    document.getElementById('modalProteinContent').innerText = proteinContent + ' g';
-                }
+        // Set nutritional values
+        document.getElementById('modalCalories').innerText = calories + ' cal';
+        document.getElementById('modalFatContent').innerText = fatContent + ' g';
+        document.getElementById('modalSaturatedFatContent').innerText = saturatedFatContent + ' g';
+        document.getElementById('modalCholesterolContent').innerText = cholesterolContent + ' mg';
+        document.getElementById('modalSodiumContent').innerText = sodiumContent + ' mg';
+        document.getElementById('modalCarbohydrateContent').innerText = carbohydrateContent + ' g';
+        document.getElementById('modalFiberContent').innerText = fiberContent + ' g';
+        document.getElementById('modalSugarContent').innerText = sugarContent + ' g';
+        document.getElementById('modalProteinContent').innerText = proteinContent + ' g';
+    }
+
     function removeLike(recipeId) {
+        // Fetch the CSRF token from the Django template context
+        const csrfToken = "{{ csrf_token }}";
+
+        // Perform the fetch request to the "menu" URL
         fetch("{% url 'menu' %}", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
-                "X-CSRFToken": "{{ csrf_token }}",  // Include CSRF token
+                "X-CSRFToken": csrfToken,  // Include CSRF token for Django
             },
             body: new URLSearchParams({
                 recipe_id: recipeId,
@@ -232,11 +238,10 @@
             })
             .then((data) => {
                 if (data.message) {
-                                // Display success message
-                                //alert(data.message);
-                                location.reload();
-                            }
-                 // Reload the page to refresh the liked recipes list
+                    // Display success message
+                    alert(data.message);
+                    location.reload(); // Reload the page to refresh the liked recipes list
+                }
             })
             .catch((error) => {
                 console.error("Error:", error);
