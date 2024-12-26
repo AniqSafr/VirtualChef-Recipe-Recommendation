@@ -236,7 +236,36 @@
                             <br>
                             <h3 class="instructions-title">Instructions</h3>
                             <p id="modalInstructions">Instructions</p>
+                            <div class="col-sm-12 mt-5" id="section1">
+                                <div class="row">
+                                    {% for recipe in recommendations %}
+                                    <!-- First Card -->
+                                    <div class="col-md-3 mb-4">
+                                        <div class="card" style="width:100%">
+                                            <img class="card-img-top" src="{{ recipe.Images }}" alt="Card image"
+                                                style="width:100%; height:400px; object-fit: cover;" href="#myModal" data-toggle="modal"
+                                                data-toggle="tooltip" title="Tap for Details!" onclick="populateModal('{{ recipe.Name }}', '{{ recipe.Description|escapejs }}',
+                                                '{{ recipe.Images }}', '{{ recipe.RecipeIngredients|escapejs }}', '{{ recipe.RecipeInstructions|escapejs }}',
+                                                '{{ recipe.Calories }}', '{{ recipe.FatContent }}', '{{ recipe.SaturatedFatContent }}', '{{ recipe.CholesterolContent }}',
+                                                '{{ recipe.SodiumContent }}', '{{ recipe.CarbohydrateContent }}', '{{ recipe.FiberContent }}', '{{ recipe.SugarContent }}',
+                                                '{{ recipe.ProteinContent }}')">
+                                            <div class="card-body">
+                                                <h4 class="card-title">{{ recipe.Name }}</h4>
+                                                <p class="card-text">Total Time: {{ recipe.TotalTime}}</p>
+                                                <!-- If you have a description column -->
+                                                <!-- Recipe Like Button -->
+                                                {# Will know if user is logged in or not #}
+                                                {% if user.is_authenticated %}
+                                                <button class="btn btn-menu" onclick="likeRecipe('{{ recipe.RecipeId }}')">
+                                                    Like
+                                                </button>
+                                                {% endif%}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
                         </div>
+
 
                         <!-- Modal footer -->
                         <div class="modal-footer">
@@ -326,13 +355,13 @@
             {% include 'main/message.html' %}
 
             <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-            crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-            crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-            crossorigin="anonymous"></script>
+                integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+                crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+                integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+                crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+                integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+                crossorigin="anonymous"></script>
 
             {% endblock %}
