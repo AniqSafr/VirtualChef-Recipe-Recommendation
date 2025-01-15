@@ -1,54 +1,11 @@
-{% extends 'authenticate/base.html' %}
+{% extends 'main/index.html' %}
 
 
 {% block content %}
 <style>
-    .row1 {
-        position: relative;
-        text-align: center;
-        width: auto;
-        overflow: hidden;
-    }
-
-    .row1 img {
-        height: auto;
-        width: 100%;
-        max-width: 100%;
-    }
-
-    .overlay-text {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: transparent;
-        color: #fff;
-        padding: 10px 20px;
-        text-align: center;
-    }
-
-    .overlay-text h1 {
-        font-size: 125px;
-        font-weight: bold;
-        font-style: italic;
-    }
-
-    .txt {
-        font-size: 30px;
-        font-weight: bold;
-        color: #bbbbbb;
-    }
-
-
-    .nav-link {
-        color: rgb(255, 255, 255);
-
-    }
-
-    .nav-link:hover {
-        color: hsla(36, 87%, 35%, 0.63);
-    }
-
+    body {
+    overflow-x: hidden;
+}
     .border {
         border-radius: 20px;
         background-color: #865d32;
@@ -73,14 +30,6 @@
         cursor: pointer;
     }
 </style>
-
-<div class="row row1">
-    <img src="..\static\media\cooking-frame4.jpg" alt="background" class="img-fluid">
-    <div class="overlay-text">
-        <h1 class="h1">Virtual Chef</h1>
-        <p class="txt">Explore our vast collection of over 80,000 recipes</p>
-    </div>
-</div>
 <div class="col-sm-12 mt-5" id="section1">
     <div class="row">
         {% for recipe in liked_recipes %}

@@ -19,7 +19,7 @@ def home(request):
 	return render(request, 'main/main.html', {})
 
 def test(request): 
-	return render(request, 'main/test.html', {})
+	return render(request, 'main/index.html', {})
 
 def login_user (request):
 	if request.method == 'POST': #if someone fills out form , Post it 

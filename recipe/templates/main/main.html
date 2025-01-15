@@ -1,73 +1,11 @@
-{% extends 'authenticate/base.html' %}
+{% extends 'main/index.html' %}
 
 
 {% block content %}
 <style>
-    .row1 {
-        position: relative;
-        text-align: center;
-        width: auto;
-        overflow: hidden;
-    }
-
-    .row1 img {
-        height: auto;
-        width: 100%;
-        max-width: 100%;
-    }
-
-    .overlay-text {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: transparent;
-        color: #fff;
-        padding: 10px 20px;
-        text-align: center;
-    }
-
-    .overlay-text h1 {
-        font-size: 125px;
-        font-weight: bold;
-        font-style: italic;
-    }
-
-    .txt {
-        font-size: 30px;
-        font-weight: bold;
-        color: #bbbbbb;
-    }
-
-    /* Full-width input fields */
-    input[type=text] {
-        width: 100%;
-        padding: 15px;
-        border: none;
-        background: #f1f1f1;
-        border-radius: 20px;
-        /* Adds rounded corners */
-    }
-
-    input[type=text]:focus {
-        background-color: #ddd;
-        outline: none;
-    }
-
-    input[type=text]::placeholder {
-        color: #000000;
-        font-weight: bold;
-    }
-
-    .nav-link {
-        color: rgb(255, 255, 255);
-
-    }
-
-    .nav-link:hover {
-        color: hsla(36, 87%, 35%, 0.63);
-    }
-
+    body {
+    overflow-x: hidden;
+}
     .border {
         border-radius: 20px;
         background-color: #865d32;
@@ -91,48 +29,7 @@
     .card-img-top:hover {
         cursor: pointer;
     }
-
-    .btn-recommend {
-        background-color: #865d32;
-        color: #ffffff;
-        border: none;
-        padding: 15px;
-        border-radius: 15px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s ease, color 0.3s ease;
-        font-weight: bold;
-    }
-
-    /* Hover effect */
-    .btn-recommend:hover {
-        background-color: #ddd;
-        color: #9f6e28;
-    }
-
-    .recommend-form {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        /* Centers the form content horizontally */
-        gap: 10px;
-        /* Adds some space between the input and button */
-    }
 </style>
-
-<div class="row row1">
-    <img src="..\static\media\cooking-frame4.jpg" alt="background" class="img-fluid">
-    <div class="overlay-text">
-        <h1 class="h1">Virtual Chef</h1>
-        <p class="txt">Explore our vast collection of over 80,000 recipes</p>
-        <form method="POST" class="recommend-form">
-            {% csrf_token %}
-            <!-- Input for multiple ingredients separated by commas -->
-            <input type="text" id="ingredient" name="ingredient" placeholder="What's your craving today?" required>
-            <button class="btn-recommend" type="submit">Search</button>
-        </form>
-    </div>
-</div>
 
 <div class="row">
     <div class="col-sm-3 ">
@@ -157,7 +54,7 @@
         <div class="row">
             {% for recipe in recommendations %}
             <!-- First Card -->
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4 mb-4 p-1">
                 <div class="card" style="width:100%">
                     <img class="card-img-top" src="{{ recipe.Images }}" alt="Card image"
                         style="width:100%; height:600px; object-fit: cover;" href="#myModal" data-toggle="modal"
