@@ -272,7 +272,7 @@ def recommend_recipe(request):
                 sugar_content=recipe.get('SugarContent', 0.0),
                 protein_content=recipe.get('ProteinContent', 0.0),
                 recipe_instructions=recipe.get('RecipeInstructions', ''),
-                recipe_ingredients=recipe.get('RecipeIngredientParts', ''),
+                recipe_ingredients=recipe.get('RecipeIngredients', ''),
             )
             liked_recipe.save()
 
