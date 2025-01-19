@@ -1,214 +1,236 @@
-{% extends 'main/index.html' %}
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.min.css" rel="stylesheet" />
 
-{% block content %}
-<style>
-    body {
-    overflow-x: hidden;
-}
-    .border {
-        border-radius: 20px;
-        background-color: #865d32;
+    <title>Virtual Chef</title>
+</head>
 
-    }
+<body>
+    <h2 class="pl-5 pt-3">
+        <a href="{% url 'main' %}" style="text-decoration: none; color: inherit;">
+            <i class="fa fa-arrow-left pr-2" aria-hidden="true" style="color:rgb(90, 90, 90);"></i>
+        </a>
+        Liked Recipe
+    </h2>
+    <style>
+        body {
+            overflow-x: hidden;
+        }
 
-    .border:hover {
-        background-color: #ddd;
-    }
+        .border {
+            border-radius: 20px;
+            background-color: #865d32;
 
-    .btn-menu {
-        background-color: #865d32;
-        color: #ffffff;
-    }
+        }
 
-    .btn-menu:hover {
-        background-color: #ddd;
-        color: #9f6e28;
-    }
+        .border:hover {
+            background-color: #ddd;
+        }
 
-    .card-img-top:hover {
-        cursor: pointer;
-    }
-</style>
-<div class="col-sm-12 mt-5" id="section1">
-    <div class="row">
-        {% for recipe in liked_recipes %}
-        <div class="col-md-3 mb-4">
-            <div class="card" style="width:100%">
-                <img class="card-img-top" src="{{ recipe.images }}" alt="Card image"
-                    style="width:100%; height:600px; object-fit: cover;" href="#likedRecipeModal" data-toggle="modal"
-                    data-toggle="tooltip" title="Tap for Details!" onclick="populateModal('{{ recipe.name }}', '{{ recipe.description|escapejs }}',
+        .btn-menu {
+            background-color: #865d32;
+            color: #ffffff;
+        }
+
+        .btn-menu:hover {
+            background-color: #ddd;
+            color: #9f6e28;
+        }
+
+        .card-img-top:hover {
+            cursor: pointer;
+        }
+    </style>
+    <div class="col-sm-12 mt-5" id="section1">
+        <div class="row">
+            {% for recipe in liked_recipes %}
+            <div class="col-md-3 mb-4">
+                <div class="card" style="width:100%">
+                    <img class="card-img-top" src="{{ recipe.images }}" alt="Card image"
+                        style="width:100%; height:600px; object-fit: cover;" href="#likedRecipeModal"
+                        data-toggle="modal" data-toggle="tooltip" title="Tap for Details!" onclick="populateModal('{{ recipe.name }}', '{{ recipe.description|escapejs }}',
                     '{{ recipe.images }}', '{{ recipe.recipe_ingredients|escapejs }}', '{{ recipe.recipe_instructions|escapejs }}',
                     '{{ recipe.calories }}', '{{ recipe.fat_content }}', '{{ recipe.saturated_fat_content }}', '{{ recipe.cholesterol_content }}',
                     '{{ recipe.sodium_content }}', '{{ recipe.carbohydrate_content }}', '{{ recipe.fiber_content }}', '{{ recipe.sugar_content }}',
                     '{{ recipe.protein_content }}')">
-                <div class="card-body">
-                    <h4 class="card-title">{{ recipe.name }}</h4>
-                    <p class="card-text">Total Time: {{ recipe.total_time}}</p>
-                    <!-- If you have a description column -->
-                    <!-- Recipe Like Button -->
+                    <div class="card-body">
+                        <h4 class="card-title">{{ recipe.name }}</h4>
+                        <p class="card-text">Total Time: {{ recipe.total_time}}</p>
+                        <!-- If you have a description column -->
+                        <!-- Recipe Like Button -->
                         {% csrf_token %}
                         <button type="button" class="btn btn-menu" onclick="removeLike('{{ recipe.recipe_id }}')">
                             Unlike
                         </button>
+                    </div>
                 </div>
             </div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-
-<!-- The Modal -->
-<div class="modal fade" id="likedRecipeModal">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
-        <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title" id="modalTitle">Recipe Details</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-
-            <!-- Modal body -->
-            <div class="modal-body">
-                <img class="card-img-top" id="modalImage" alt="Card image"
-                    style="width:100%; height:600px; object-fit: cover;">
-                <br>
-                <h3 class="desc-title">Description</h3>
-                <p id="modalDescription">description</p>
-                <br>
-                <h3 class="nutrition-title">Nutritional Information</h3>
-                <table class="table table-bordered table-light table-hover">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>Calories</th>
-                            <th>Fat</th>
-                            <th>Saturated Fat</th>
-                            <th>Cholesterol</th>
-                            <th>Sodium</th>
-                            <th>Carbohydrate</th>
-                            <th>Fiber</th>
-                            <th>Sugar</th>
-                            <th>Protein</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td id="modalCalories"></td>
-                            <td id="modalFatContent"></td>
-                            <td id="modalSaturatedFatContent"></td>
-                            <td id="modalCholesterolContent"></td>
-                            <td id="modalSodiumContent"></td>
-                            <td id="modalCarbohydrateContent"></td>
-                            <td id="modalFiberContent"></td>
-                            <td id="modalSugarContent"></td>
-                            <td id="modalProteinContent"></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <h3 class="ingredients-title">Ingredients</h3>
-                <p id="modalIngredients">Ingredients</p>
-                <br>
-                <h3 class="instructions-title">Instructions</h3>
-                <p id="modalInstructions">Instructions</p>
-            </div>
-
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-menu" data-dismiss="modal">Close</button>
-            </div>
-
+            {% endfor %}
         </div>
     </div>
-</div>
 
-<script>
-    // Add event listener for the input field
-    document.getElementById('searchInput').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {  // Detect "Enter" key press
-            // Scroll to Section 1 when "Enter" is pressed
-            document.getElementById('section1').scrollIntoView({
-                behavior: 'smooth'  // Smooth scrolling effect
-            });
+    <!-- The Modal -->
+    <div class="modal fade" id="likedRecipeModal">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modalTitle">Recipe Details</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <img class="card-img-top" id="modalImage" alt="Card image"
+                        style="width:100%; height:600px; object-fit: cover;">
+                    <br>
+                    <h3 class="desc-title">Description</h3>
+                    <p id="modalDescription">description</p>
+                    <br>
+                    <h3 class="nutrition-title">Nutritional Information</h3>
+                    <table class="table table-bordered table-light table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Calories</th>
+                                <th>Fat</th>
+                                <th>Saturated Fat</th>
+                                <th>Cholesterol</th>
+                                <th>Sodium</th>
+                                <th>Carbohydrate</th>
+                                <th>Fiber</th>
+                                <th>Sugar</th>
+                                <th>Protein</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="modalCalories"></td>
+                                <td id="modalFatContent"></td>
+                                <td id="modalSaturatedFatContent"></td>
+                                <td id="modalCholesterolContent"></td>
+                                <td id="modalSodiumContent"></td>
+                                <td id="modalCarbohydrateContent"></td>
+                                <td id="modalFiberContent"></td>
+                                <td id="modalSugarContent"></td>
+                                <td id="modalProteinContent"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3 class="ingredients-title">Ingredients</h3>
+                    <p id="modalIngredients">Ingredients</p>
+                    <br>
+                    <h3 class="instructions-title">Instructions</h3>
+                    <p id="modalInstructions">Instructions</p>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-menu" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add event listener for the input field
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {  // Detect "Enter" key press
+                // Scroll to Section 1 when "Enter" is pressed
+                document.getElementById('section1').scrollIntoView({
+                    behavior: 'smooth'  // Smooth scrolling effect
+                });
+            }
+        });
+
+        function populateModal(title, description, imageUrl, ingredients, instructions, calories, fatContent, saturatedFatContent, cholesterolContent, sodiumContent, carbohydrateContent, fiberContent, sugarContent, proteinContent) {
+            // Set the modal title
+            document.getElementById('modalTitle').innerText = title;
+
+            // Set the modal image
+            document.getElementById('modalImage').src = imageUrl;
+
+            // Set the modal description
+            document.getElementById('modalDescription').innerText = description;
+
+            // Set the modal ingredients
+            document.getElementById('modalIngredients').innerText = ingredients;
+
+            // Set the modal instructions
+            document.getElementById('modalInstructions').innerText = instructions;
+
+            // Set nutritional values
+            document.getElementById('modalCalories').innerText = calories + ' cal';
+            document.getElementById('modalFatContent').innerText = fatContent + ' g';
+            document.getElementById('modalSaturatedFatContent').innerText = saturatedFatContent + ' g';
+            document.getElementById('modalCholesterolContent').innerText = cholesterolContent + ' mg';
+            document.getElementById('modalSodiumContent').innerText = sodiumContent + ' mg';
+            document.getElementById('modalCarbohydrateContent').innerText = carbohydrateContent + ' g';
+            document.getElementById('modalFiberContent').innerText = fiberContent + ' g';
+            document.getElementById('modalSugarContent').innerText = sugarContent + ' g';
+            document.getElementById('modalProteinContent').innerText = proteinContent + ' g';
         }
-    });
 
-    function populateModal(title, description, imageUrl, ingredients, instructions, calories, fatContent, saturatedFatContent, cholesterolContent, sodiumContent, carbohydrateContent, fiberContent, sugarContent, proteinContent) {
-        // Set the modal title
-        document.getElementById('modalTitle').innerText = title;
+        function removeLike(recipeId) {
+            // Fetch the CSRF token from the Django template context
+            const csrfToken = "{{ csrf_token }}";
 
-        // Set the modal image
-        document.getElementById('modalImage').src = imageUrl;
-
-        // Set the modal description
-        document.getElementById('modalDescription').innerText = description;
-
-        // Set the modal ingredients
-        document.getElementById('modalIngredients').innerText = ingredients;
-
-        // Set the modal instructions
-        document.getElementById('modalInstructions').innerText = instructions;
-
-        // Set nutritional values
-        document.getElementById('modalCalories').innerText = calories + ' cal';
-        document.getElementById('modalFatContent').innerText = fatContent + ' g';
-        document.getElementById('modalSaturatedFatContent').innerText = saturatedFatContent + ' g';
-        document.getElementById('modalCholesterolContent').innerText = cholesterolContent + ' mg';
-        document.getElementById('modalSodiumContent').innerText = sodiumContent + ' mg';
-        document.getElementById('modalCarbohydrateContent').innerText = carbohydrateContent + ' g';
-        document.getElementById('modalFiberContent').innerText = fiberContent + ' g';
-        document.getElementById('modalSugarContent').innerText = sugarContent + ' g';
-        document.getElementById('modalProteinContent').innerText = proteinContent + ' g';
-    }
-
-    function removeLike(recipeId) {
-        // Fetch the CSRF token from the Django template context
-        const csrfToken = "{{ csrf_token }}";
-
-        // Perform the fetch request to the "menu" URL
-        fetch("{% url 'menu' %}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "X-CSRFToken": csrfToken,  // Include CSRF token for Django
-            },
-            body: new URLSearchParams({
-                recipe_id: recipeId,
-                remove_like: true,  // Indicate this is a "remove like" action
-            }),
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Failed to remove like.");
-                }
-                return response.json();
+            // Perform the fetch request to the "menu" URL
+            fetch("{% url 'menu' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": csrfToken,  // Include CSRF token for Django
+                },
+                body: new URLSearchParams({
+                    recipe_id: recipeId,
+                    remove_like: true,  // Indicate this is a "remove like" action
+                }),
             })
-            .then((data) => {
-                if (data.message) {
-                    // Display success message
-                    alert(data.message);
-                    location.reload(); // Reload the page to refresh the liked recipes list
-                }
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-                alert("Failed to remove the like. " + error.message);
-            });
-    }
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to remove like.");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    if (data.message) {
+                        // Display success message
+                        alert(data.message);
+                        location.reload(); // Reload the page to refresh the liked recipes list
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    alert("Failed to remove the like. " + error.message);
+                });
+        }
 
-</script>
+    </script>
 
-{% include 'main/message.html' %}
+    {% include 'main/message.html' %}
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 
-
-{% endblock %}
+        
+        </body>
+        
+        </html>

@@ -4,485 +4,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navbar Testing</title>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Shopping List with Collapsible</title>
 </head>
 
 <body>
     <style>
-        @import url('https://fonts.googleapis.com/css?family=Quicksand:400,500,700');
-
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Quicksand", sans-serif;
-            font-size: 62.5%;
-            font-size: 10px;
-        }
-
-        /*-- Inspiration taken from abdo steif -->
-/* --> https://codepen.io/abdosteif/pen/bRoyMb?editors=1100*/
-
-        /* Navbar section */
-
-        .nav {
-            width: 100%;
-            height: 65px;
-            position: fixed;
-            line-height: 65px;
-            text-align: center;
-        }
-
-        .nav div.logo {
-            float: left;
-            width: auto;
-            height: auto;
-            padding-left: 3rem;
-        }
-
-        .nav div.logo a {
-            text-decoration: none;
-            color: #fff;
-            font-size: 2.5rem;
-        }
-
-        .nav div.logo a:hover {
-            color: #00E676;
-        }
-
-        .nav div.main_list {
-            height: 65px;
-            float: right;
-        }
-
-        .nav div.main_list ul {
-            width: 100%;
-            height: 65px;
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav div.main_list ul li {
-            width: auto;
-            height: 65px;
-            padding: 0;
-            padding-right: 3rem;
-        }
-
-        .nav div.main_list ul li a {
-            text-decoration: none;
-            color: #fff;
-            line-height: 65px;
-            font-size: 2.4rem;
-        }
-
-        .nav div.main_list ul li a:hover {
-            color: #00E676;
-        }
-
-
-        /* Home section */
-
-        .home {
-            width: 100%;
-            height: 100vh;
-            background-image: url("../static/media/cooking-frame4.jpg");
-            background-position: center top;
-            background-size: cover;
-        }
-
-        .navTrigger {
-            display: none;
-        }
-
-        .nav {
-            padding-top: 20px;
-            padding-bottom: 20px;
-            -webkit-transition: all 0.4s ease;
-            transition: all 0.4s ease;
-        }
-
-
-        /* Media qurey section */
-
-        @media screen and (min-width: 768px) and (max-width: 1024px) {
-            .container {
-                margin: 0;
-            }
-        }
-
-        @media screen and (max-width:768px) {
-            .navTrigger {
-                display: block;
-            }
-
-            .nav div.logo {
-                margin-left: 15px;
-            }
-
-            .nav div.main_list {
-                width: 100%;
-                height: 0;
-                overflow: hidden;
-            }
-
-            .nav div.show_list {
-                height: auto;
-                display: none;
-            }
-
-            .nav div.main_list ul {
-                flex-direction: column;
-                width: 100%;
-                height: 100vh;
-                right: 0;
-                left: 0;
-                bottom: 0;
-                background-color: #111;
-                /*same background color of navbar*/
-                background-position: center top;
-            }
-
-            .nav div.main_list ul li {
-                width: 100%;
-                text-align: right;
-            }
-
-            .nav div.main_list ul li a {
-                text-align: center;
-                width: 100%;
-                font-size: 3rem;
-                padding: 20px;
-            }
-
-            .nav div.media_button {
-                display: block;
-            }
-        }
-
-
-        /* Animation */
-        /* Inspiration taken from Dicson https://codemyui.com/simple-hamburger-menu-x-mark-animation/ */
-
-        .navTrigger {
+        .btn-add {
+            background-color: #865d32;
+            color: #ffffff;
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 16px;
             cursor: pointer;
-            width: 30px;
-            height: 25px;
-            margin: auto;
-            position: absolute;
-            right: 30px;
-            top: 0;
-            bottom: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-weight: bold;
         }
 
-        .navTrigger i {
-            background-color: #fff;
-            border-radius: 2px;
-            content: '';
-            display: block;
-            width: 100%;
-            height: 4px;
-        }
-
-        .navTrigger i:nth-child(1) {
-            -webkit-animation: outT 0.8s backwards;
-            animation: outT 0.8s backwards;
-            -webkit-animation-direction: reverse;
-            animation-direction: reverse;
-        }
-
-        .navTrigger i:nth-child(2) {
-            margin: 5px 0;
-            -webkit-animation: outM 0.8s backwards;
-            animation: outM 0.8s backwards;
-            -webkit-animation-direction: reverse;
-            animation-direction: reverse;
-        }
-
-        .navTrigger i:nth-child(3) {
-            -webkit-animation: outBtm 0.8s backwards;
-            animation: outBtm 0.8s backwards;
-            -webkit-animation-direction: reverse;
-            animation-direction: reverse;
-        }
-
-        .navTrigger.active i:nth-child(1) {
-            -webkit-animation: inT 0.8s forwards;
-            animation: inT 0.8s forwards;
-        }
-
-        .navTrigger.active i:nth-child(2) {
-            -webkit-animation: inM 0.8s forwards;
-            animation: inM 0.8s forwards;
-        }
-
-        .navTrigger.active i:nth-child(3) {
-            -webkit-animation: inBtm 0.8s forwards;
-            animation: inBtm 0.8s forwards;
-        }
-
-        @-webkit-keyframes inM {
-            50% {
-                -webkit-transform: rotate(0deg);
-            }
-
-            100% {
-                -webkit-transform: rotate(45deg);
-            }
-        }
-
-        @keyframes inM {
-            50% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(45deg);
-            }
-        }
-
-        @-webkit-keyframes outM {
-            50% {
-                -webkit-transform: rotate(0deg);
-            }
-
-            100% {
-                -webkit-transform: rotate(45deg);
-            }
-        }
-
-        @keyframes outM {
-            50% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(45deg);
-            }
-        }
-
-        @-webkit-keyframes inT {
-            0% {
-                -webkit-transform: translateY(0px) rotate(0deg);
-            }
-
-            50% {
-                -webkit-transform: translateY(9px) rotate(0deg);
-            }
-
-            100% {
-                -webkit-transform: translateY(9px) rotate(135deg);
-            }
-        }
-
-        @keyframes inT {
-            0% {
-                transform: translateY(0px) rotate(0deg);
-            }
-
-            50% {
-                transform: translateY(9px) rotate(0deg);
-            }
-
-            100% {
-                transform: translateY(9px) rotate(135deg);
-            }
-        }
-
-        @-webkit-keyframes outT {
-            0% {
-                -webkit-transform: translateY(0px) rotate(0deg);
-            }
-
-            50% {
-                -webkit-transform: translateY(9px) rotate(0deg);
-            }
-
-            100% {
-                -webkit-transform: translateY(9px) rotate(135deg);
-            }
-        }
-
-        @keyframes outT {
-            0% {
-                transform: translateY(0px) rotate(0deg);
-            }
-
-            50% {
-                transform: translateY(9px) rotate(0deg);
-            }
-
-            100% {
-                transform: translateY(9px) rotate(135deg);
-            }
-        }
-
-        @-webkit-keyframes inBtm {
-            0% {
-                -webkit-transform: translateY(0px) rotate(0deg);
-            }
-
-            50% {
-                -webkit-transform: translateY(-9px) rotate(0deg);
-            }
-
-            100% {
-                -webkit-transform: translateY(-9px) rotate(135deg);
-            }
-        }
-
-        @keyframes inBtm {
-            0% {
-                transform: translateY(0px) rotate(0deg);
-            }
-
-            50% {
-                transform: translateY(-9px) rotate(0deg);
-            }
-
-            100% {
-                transform: translateY(-9px) rotate(135deg);
-            }
-        }
-
-        @-webkit-keyframes outBtm {
-            0% {
-                -webkit-transform: translateY(0px) rotate(0deg);
-            }
-
-            50% {
-                -webkit-transform: translateY(-9px) rotate(0deg);
-            }
-
-            100% {
-                -webkit-transform: translateY(-9px) rotate(135deg);
-            }
-        }
-
-        @keyframes outBtm {
-            0% {
-                transform: translateY(0px) rotate(0deg);
-            }
-
-            50% {
-                transform: translateY(-9px) rotate(0deg);
-            }
-
-            100% {
-                transform: translateY(-9px) rotate(135deg);
-            }
-        }
-
-        .affix {
-            padding: 0;
-            background-color: #111;
-        }
-
-        .myH2 {
-            text-align: center;
-            font-size: 4rem;
-        }
-
-        .myP {
-            text-align: justify;
-            padding-left: 15%;
-            padding-right: 15%;
-            font-size: 20px;
-        }
-
-        @media all and (max-width:700px) {
-            .myP {
-                padding: 2%;
-            }
+        .btn-add:hover {
+            background-color: #ddd;
+            color: #9f6e28;
         }
     </style>
-    <nav class="nav">
-        <div class="container">
-            <div class="logo">
-                <a class="navbar-brand" href="#demo" data-toggle="collapse">
-                    <span class="navbar-text"><b>{{user.username}}</b></span>
-                  </a>
+
+    <section class="vh-100" style="background-color: #eee;">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col col-lg-9 col-xl-7">
+                    <div class="card rounded-3">
+                        <div class="card-body p-4">
+                            <!-- Add Item Form -->
+                            <form method="POST" class="d-flex justify-content-center align-items-center mb-4">
+                                {% csrf_token %}
+                                <div class="form-outline flex-fill">
+                                    <input type="text" id="form3" name="item_name" class="form-control form-control-lg"
+                                        required />
+                                    <label class="form-label" for="form3">What do you need to buy?</label>
+                                </div>
+                                <button type="submit" class="btn btn-add btn-lg ms-2">Add</button>
+                            </form>
+
+                            <!-- Shopping List -->
+                            <table class="table mb-4">
+                                {% for item in user_items %}
+                                <tbody>
+                                    <tr>
+                                        {% if item.recipe_id %}
+                                        <!-- Item with details -->
+                                        <td>
+                                            <a role="button" style="cursor: pointer;"
+                                                onclick="populateCollapse('{{ item.id }}', '{{ item.item_name|escapejs }}')">
+                                                {{ item.name }}
+                                            </a>
+                                        </td>
+                                        {% else %}
+                                        <!-- Simple item -->
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <input class="form-check-input me-2" type="checkbox" aria-label="..."
+                                                    onclick="toggleCheckedUI(this)" />
+                                                <span
+                                                    class="{% if item.checked %}text-decoration-line-through{% endif %}">
+                                                    {{ item.item_name }}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        {% endif %}
+                                        <td>
+                                            <a href="{% url 'remove_item' item.id %}" title="Remove item">
+                                                <i class="fas fa-times text-danger"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <!-- Collapsible Section -->
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="collapse" id="collapseDetails-{{ item.id }}">
+                                                <div class="card card-body">
+                                                    <p><strong>Ingredients:</strong></p>
+                                                    <div id="ingredients-{{ item.id }}"></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div id="mainListDiv" class="main_list">
-                <ul class="navlinks">
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Portfolio</a></li>
-                    <li><a href="#">Services</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-            <span class="navTrigger">
-                <i></i>
-                <i></i>
-                <i></i>
-            </span>
         </div>
-    </nav>
-
-    <section class="home">
     </section>
-    <div style="height: 1000px">
-        <!-- just to make scrolling effect possible -->
-        <h2 class="myH2">What is this ?</h2>
-        <p class="myP">This is a responsive fixed navbar animated on scroll</p>
-        <p class="myP">I took inspiration from ABDO STEIF (<a
-                href="https://codepen.io/abdosteif/pen/bRoyMb?editors=1100">https://codepen.io/abdosteif/pen/bRoyMb?editors=1100</a>)
-            and Dicson <a href="https://codepen.io/dicson/pen/waKPgQ">(https://codepen.io/dicson/pen/waKPgQ)</a></p>
-        <p class="myP">I HOPE YOU FIND THIS USEFULL</p>
-        <p class="myP">Albi</p>
-        <p class="myP">
 
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ipsum ratione facere animi impedit rem labore sint
-            repellendus ipsa sapiente voluptatem aut excepturi quo itaque, ab earum cumque. Voluptatem beatae id
-            inventore quod voluptate qui deserunt, quis placeat, tempora ex totam, dolore sequi harum eos voluptatibus
-            animi labore officiis minus laboriosam
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ipsum ratione facere animi impedit rem labore sint
-            repellendus ipsa sapiente voluptatem aut excepturi quo itaque, ab earum cumque. Voluptatem beatae id
-            inventore quod voluptate qui deserunt, quis placeat, tempora ex totam, dolore sequi harum eos voluptatibus
-            animi labore officiis minus laboriosam
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ipsum ratione facere animi impedit rem labore sint
-            repellendus ipsa sapiente voluptatem aut excepturi quo itaque, ab earum cumque. Voluptatem beatae id
-            inventore quod voluptate qui deserunt, quis placeat, tempora ex totam, dolore sequi harum eos voluptatibus
-            animi labore officiis minus laboriosam
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ipsum ratione facere animi impedit rem labore sint
-            repellendus ipsa sapiente voluptatem aut excepturi quo itaque, ab earum cumque. Voluptatem beatae id
-            inventore quod voluptate qui deserunt, quis placeat, tempora ex totam, dolore sequi harum eos voluptatibus
-            animi labore officiis minus laboriosam
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ipsum ratione facere animi impedit rem labore sint
-            repellendus ipsa sapiente voluptatem aut excepturi quo itaque, ab earum cumque. Voluptatem beatae id
-            inventore quod voluptate qui deserunt, quis placeat, tempora ex totam, dolore sequi harum eos voluptatibus
-            animi labore officiis minus laboriosam
-        </p>
-    </div>
-
-    <!-- Jquery needed -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="js/scripts.js"></script>
-
-    <!-- Function used to shrink nav bar removing paddings and adding black background -->
     <script>
-        $(window).scroll(function () {
-            if ($(document).scrollTop() > 50) {
-                $('.nav').addClass('affix');
-                console.log("OK");
-            } else {
-                $('.nav').removeClass('affix');
-            }
-        });
+        function populateCollapse(itemId, listItem) {
+            // Get the collapse container for the specified item ID
+            const ingredientsContainer = document.getElementById(`ingredients-${itemId}`);
 
-        $('.navTrigger').click(function () {
-            $(this).toggleClass('active');
-            console.log("Clicked menu");
-            $("#mainListDiv").toggleClass("show_list");
-            $("#mainListDiv").fadeIn();
-        });
+            // Clear any previous content
+            ingredientsContainer.innerHTML = '';
+
+            // Split the list item string by commas
+            const items = listItem.split(',');
+
+            // Create a new line for each ingredient
+            items.forEach(item => {
+                // Trim whitespace and create a container for each item
+                const trimmedItem = item.trim();
+                const itemDiv = document.createElement('div');
+                itemDiv.textContent = trimmedItem; // Set the text content
+
+                // Append the item to the container
+                ingredientsContainer.appendChild(itemDiv);
+            });
+
+            // Toggle the collapse programmatically
+            const collapseElement = document.getElementById(`collapseDetails-${itemId}`);
+            const bsCollapse = new bootstrap.Collapse(collapseElement, { toggle: true });
+            bsCollapse.show();
+        }
+
     </script>
 
+
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 
 </html>
-
-
