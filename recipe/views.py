@@ -87,18 +87,23 @@ def edit_profile(request):
         # Nutrition form handling
         nutrition_form = EditNutritionForm(request.POST, instance=nutrition_data)
 
-        # Check which form was submitted and process accordingly
-        if 'profile_submit' in request.POST and profile_form.is_valid():
-            profile_form.save()
-            messages.success(request, 'Your profile has been updated.')
-        else:
-            messages.success(request, 'Error to update.')
+        # Process profile form submission
+        if 'profile_submit' in request.POST:
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, 'Your profile has been updated.')
+                return redirect('edit_profile')  # Redirect to avoid re-submission
+            else:
+                messages.error(request, 'Error updating your profile. Please correct the errors below.')
 
-        if 'nutrition_submit' in request.POST and nutrition_form.is_valid():
-            nutrition_form.save()
-            messages.success(request, 'Your nutrition preferences have been updated.')
-
-        return redirect('edit_profile')
+        # Process nutrition form submission
+        elif 'nutrition_submit' in request.POST:
+            if nutrition_form.is_valid():
+                nutrition_form.save()
+                messages.success(request, 'Your nutrition preferences have been updated.')
+                return redirect('edit_profile')  # Redirect to avoid re-submission
+            else:
+                messages.error(request, 'Error updating your nutrition preferences. Please correct the errors below.')
 
     else:
         # If GET request, instantiate the forms
@@ -112,6 +117,7 @@ def edit_profile(request):
     }
 
     return render(request, 'authenticate/edit_profile.html', context)
+
 
 def change_password(request):
     if request.method == 'POST':
@@ -324,8 +330,6 @@ def liked_recipes(request):
     return render(request, 'main/menu.html', {'liked_recipes': liked_recipes})
     
 
-
-from collections import Counter
 
 def Testitem(request):
     # Handle form submission
