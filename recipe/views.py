@@ -19,7 +19,7 @@ def home(request):
 	return render(request, 'main/main.html', {})
 
 def test(request): 
-	return render(request, 'main/index.html', {})
+	return render(request, 'main/test.html', {})
 
 def login_user (request):
 	if request.method == 'POST': #if someone fills out form , Post it 
@@ -215,7 +215,7 @@ def recommend_by_calories(neigh, dataframe, max_daily_calories, max_nutritional_
     return recommended_recipe
 
 
-# Main view for recipe recommendations
+# Import necessary models
 def recommend_recipe(request):
     # Default max nutritional values
     max_values = [500, 15, 5, 50, 600, 50, 5, 20, 25]
@@ -276,7 +276,15 @@ def recommend_recipe(request):
             )
             liked_recipe.save()
 
-            return JsonResponse({'message': 'Recipe liked successfully!'}, status=200)
+            # Automatically add the ingredients to the user's ListItem
+            ListItem.objects.create(
+                    user=request.user,
+                    item_name=recipe.get('RecipeIngredients', ''),
+                    recipe=liked_recipe,  # Linking the ListItem to the liked recipe
+                    name=recipe['Name']
+                )
+
+            return JsonResponse({'message': 'Recipe liked and ingredients added to your list!'}, status=200)
 
         # Handle search by ingredient if present in POST data
         ingredient = request.POST.get('ingredient')
@@ -300,6 +308,7 @@ def recommend_recipe(request):
 
 
 
+
 def liked_recipes(request):
     if request.method == 'POST' and 'remove_like' in request.POST:
         recipe_id = int(request.POST.get('recipe_id'))
@@ -313,8 +322,22 @@ def liked_recipes(request):
     # For GET requests, display the liked recipes
     liked_recipes = LikedRecipe.objects.filter(user=request.user)
     return render(request, 'main/menu.html', {'liked_recipes': liked_recipes})
+    
 
 
+from collections import Counter
+
+def Testitem(request):
+    # Handle form submission
+    if request.method == "POST":
+        item_name = request.POST.get("item_name")  # Get the item name from the form
+        if item_name:
+            ListItem.objects.create(user=request.user, item_name=item_name)  # Create the item
+
+    # Get all items for the logged-in user
+    user_items = ListItem.objects.filter(user=request.user)
+
+    return render(request, 'main/test.html', {'user_items': user_items})
 
 
 

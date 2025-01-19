@@ -16,14 +16,6 @@ class EditNutrition(models.Model):
     def __str__(self):
         return f"{self.user.username}'s Nutrition Data"
     
-class ListItem(models.Model):
-    id = models.AutoField(primary_key=True)  # AutoField handles IDs automatically; no need for a default
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    item_name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return f"{self.user.username}'s item: {self.item_name}"
-    
 
 class LikedRecipe(models.Model):
     recipe_id = models.IntegerField(primary_key=True)
@@ -48,5 +40,15 @@ class LikedRecipe(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s liked recipe: {self.name}"
+    
+class ListItem(models.Model):
+    id = models.AutoField(primary_key=True)  # AutoField handles IDs automatically
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    item_name = models.CharField(max_length=255)  # Name of the item to buy
+    recipe = models.ForeignKey(LikedRecipe, on_delete=models.CASCADE, related_name='items', null=True, blank=True)  # Linked to a recipe
+    name = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f"User: {self.user.username}, Recipe: {self.recipe.name}, Item: {self.item_name}"
 
 
