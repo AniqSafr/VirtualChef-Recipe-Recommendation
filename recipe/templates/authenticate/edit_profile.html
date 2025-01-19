@@ -10,6 +10,14 @@
 		integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- Font Awesome -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+	<!-- Google Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+	<!-- MDB -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
 	<title>Profile</title>
 </head>
@@ -86,31 +94,31 @@
 					<div class="row mt-3">
 						<form method="POST" action="{% url 'edit_profile' %}">
 							{% csrf_token %}
-						
+
 							{% if form.errors %}
 							<div class="alert alert-danger alert-dismissable" role="alert">
 								<button class="close" data-dismiss="alert">
 									<small><sup>x</sup></small>
 								</button>
 								{% for field in form %}
-									{% if field.errors %}
-										<div>{{ field.errors }}</div>
-									{% endif %}
+								{% if field.errors %}
+								<div>{{ field.errors }}</div>
+								{% endif %}
 								{% endfor %}
 							</div>
 							{% endif %}
-						
+
 							<!-- Profile form fields -->
 							{{ form.as_p }}
-						
+
 							<!-- Submit button for profile form -->
 							<input type="submit" value="Submit" name="profile_submit" class="btn btn-edit-profile">
-						
+
 							<!-- Additional buttons -->
 							<a class="btn btn-logout" href="{% url 'logout' %}">Logout</a>
 							<p><a href="{% url 'change_password' %}">Click here</a> to change your password</p>
 						</form>
-						
+
 
 					</div>
 				</div>
@@ -182,6 +190,30 @@
 						</div>
 
 						<div class="modal-body">
+							<button type="button" class="btn btn-outline-dark" data-toggle="tooltip"
+								title="For a caloric deficit with a focus on fat reduction while maintaining muscle mass."
+								data-preset="weight_loss">Weight
+								Loss</button>
+							<button type="button" class="btn btn-outline-dark" data-toggle="tooltip"
+								title="For a caloric surplus to build muscle or gain healthy weight."
+								data-preset="weight_gain">Weight
+								Gain</button>
+							<button type="button" class="btn btn-outline-dark" data-toggle="tooltip"
+								title="High protein and moderate carb intake with a focus on recovery and muscle growth."
+								data-preset="Muscle_Building">Muscle Building</button>
+							<button type="button" class="btn btn-outline-dark" data-toggle="tooltip"
+								title="Focus on high carbohydrates and hydration to sustain long activities."
+								data-preset="Endurance_Training">Endurance Training</button>
+							<button type="button" class="btn btn-outline-dark" data-toggle="tooltip"
+								title="Focuses on blood sugar control through balanced macronutrient distribution."
+								data-preset="Managing_Diabetes">Managing Diabetes</button>
+								<button type="button" class="btn btn-outline-dark" data-toggle="tooltip"
+								title="Prioritizes reduced fat and sodium for cardiovascular health."
+								data-preset="Heart_Health">Heart Health</button>
+								<button type="button" class="btn btn-outline-dark" data-toggle="tooltip"
+								title="For overall health and energy maintenance."
+								data-preset="General_Wellness">General Wellness</button>
+
 							<div class="modal-warning">
 								<p class="text-danger mt-1" style="font-size: 0.9rem;">
 									Note: Nutrition values cannot be 0.
@@ -189,7 +221,7 @@
 							</div>
 							<form id="nutritionForm" method="post">
 								{% csrf_token %}
-								
+
 								<!-- Display any form errors -->
 								{% if nutrition_form.errors %}
 								<div class="alert alert-danger alert-dismissable" role="alert">
@@ -197,18 +229,19 @@
 										<small><sup>x</sup></small>
 									</button>
 									{% for field in nutrition_form %}
-										{% if field.errors %}
-											<div>{{ field.errors }}</div>
-										{% endif %}
+									{% if field.errors %}
+									<div>{{ field.errors }}</div>
+									{% endif %}
 									{% endfor %}
 								</div>
 								{% endif %}
-								
+
 								<!-- Display the nutrition form fields -->
 								{{ nutrition_form.as_p }}
-						
+
 								<!-- Submit button for nutrition form -->
-								<input type="submit" value="Save Nutrition" name="nutrition_submit" class="btn btn-confirm">
+								<input type="submit" value="Save Nutrition" name="nutrition_submit"
+									class="btn btn-confirm">
 								<button type="button" class="btn btn-cancel" data-dismiss="modal">Cancel</button>
 							</form>
 						</div>
@@ -222,16 +255,117 @@
 
 	{% include 'main/message.html' %}
 
+	<script>
+		// Preset values mapping
+		const presets = {
+			weight_loss: {
+				calories: 1800,
+				fat: 60,
+				saturated_fat: 15,
+				cholesterol: 200,
+				sodium: 2300,
+				carbohydrate: 150,
+				fiber: 30,
+				sugar: 30,
+				protein: 140
+			},
+			weight_gain: {
+				calories: 2500,
+				fat: 80,
+				saturated_fat: 20,
+				cholesterol: 300,
+				sodium: 2400,
+				carbohydrate: 200,
+				fiber: 25,
+				sugar: 40,
+				protein: 150
+			},
+			Muscle_Building: {
+				calories: 3500,
+				fat: 80,
+				saturatedFat: 25,
+				cholesterol: 300,
+				sodium: 2500,
+				carbohydrates: 350,
+				fiber: 35,
+				sugar: 40,
+				protein: 168
+			},
+			Endurance_Training: {
+				calories: 4000,
+				fat: 80,
+				saturatedFat: 25,
+				cholesterol: 300,
+				sodium: 3500,
+				carbohydrates: 500,
+				fiber: 35,
+				sugar: 60,
+				protein: 126
+			},
+			Managing_Diabetes: {
+				calories: 2000,
+				fat: 70,
+				saturatedFat: 15,
+				cholesterol: 200,
+				sodium: 2300,
+				carbohydrates: 200,
+				fiber: 50,
+				sugar: 25,
+				protein: 85
+			},
+			Heart_Health: {
+				calories: 2200,
+				fat: 70,
+				saturatedFat: 13,
+				cholesterol: 200,
+				sodium: 2300,
+				carbohydrates: 300,
+				fiber: 35,
+				sugar: 30,
+				protein: 105
+			},
+			General_Wellness: {
+				calories: 2500,
+				fat: 80,
+				saturatedFat: 20,
+				cholesterol: 300,
+				sodium: 2300,
+				carbohydrates: 325,
+				fiber: 30,
+				sugar: 50,
+				protein: 112
+			}
+		};
+
+		// Add event listener to buttons
+		document.querySelectorAll('[data-preset]').forEach(button => {
+			button.addEventListener('click', function () {
+				const preset = presets[this.dataset.preset];
+				if (preset) {
+					// Update form fields
+					for (const [key, value] of Object.entries(preset)) {
+						const input = document.querySelector(`[name=${key}]`);
+						if (input) {
+							input.value = value;
+						}
+					}
+				}
+			});
+		});
+	</script>
+
+
+
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-    crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-    crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-    crossorigin="anonymous"></script>
-	
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+
 </body>
 
 </html>
